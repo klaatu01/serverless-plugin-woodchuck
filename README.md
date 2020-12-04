@@ -1,5 +1,5 @@
 # serverless-plugin-woodchuck
-[![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com) [![npm version](https://badge.fury.io/js/serverless-plugin-typescript.svg)](https://badge.fury.io/js/serverless-plugin-typescript) [![Build Status](https://travis-ci.org/prisma/serverless-plugin-typescript.svg?branch=master)](https://travis-ci.org/prisma/serverless-plugin-typescript)
+[![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
 Serverless plugin for ~zero-config log forwarding
 
