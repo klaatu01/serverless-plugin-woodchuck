@@ -24,7 +24,7 @@ plugins:
 
 ## Configure
 
-For more information on Woodchuck and configuring look at its [repo](www.github.com/klaatu01/woodchuck)
+For more information on Woodchuck and configuring look at its [repo](https://www.github.com/klaatu01/woodchuck)
 
 All keys below are optional. 
 ```yaml
