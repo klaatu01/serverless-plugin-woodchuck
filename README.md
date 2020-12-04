@@ -5,7 +5,7 @@ Serverless plugin for ~zero-config log forwarding
 
 ## Features
 
-* Zero-config: Works out of the box without any extra configuration, by getting the 'default' version of woodchuck for your region.
+* Zero-config: Works out of the box without any extra configuration, by getting the 'default' version of Woodchuck for your region.
 
 ## Install
 
@@ -24,7 +24,7 @@ plugins:
 
 ## Configure
 
-For more information on Woodchuck and configuring look at its [repo](www.github.com/klaatu01/woodchuck-rs)
+For more information on Woodchuck and configuring look at its [repo](www.github.com/klaatu01/woodchuck)
 
 All keys below are optional. 
 ```yaml
