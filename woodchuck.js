@@ -13,7 +13,7 @@ class WoodchuckPlugin {
   
   buildWoodchuckConfig(config, region) {
     return {
-      arn: config.arn ?? this.getArn(region),
+      arn: config.arn ? config.arn : this.getArn(region),
       ...config,
     }
   }
