@@ -21,8 +21,9 @@ class WoodchuckPlugin {
   addWoodchuck() {
     const { service } = this.serverless;
     const { custom = {}, functions = {}, provider = {} } = service;
+    const { woodchuck = {} } = custom;
 
-    const config = this.buildWoodchuckConfig(custom.woodchuck, provider.region);
+    const config = this.buildWoodchuckConfig(woodchuck, provider.region);
 
     console.log(config);
      
