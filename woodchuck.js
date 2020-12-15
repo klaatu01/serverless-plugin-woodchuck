@@ -7,7 +7,7 @@ class WoodchuckPlugin {
     };
   }
 
-  getArn = (region) => {
+  getArn(region){
     return `arn:aws:lambda:${region}:846198688143:layer:woodchuck:4`
   }
   
