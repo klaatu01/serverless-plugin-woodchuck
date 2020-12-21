@@ -8,7 +8,7 @@ class WoodchuckPlugin {
   }
 
   getArn(region){
-    return `arn:aws:lambda:${region}:846198688143:layer:woodchuck:6`
+    return `arn:aws:lambda:${region}:846198688143:layer:woodchuck:7`
   }
   
   buildWoodchuckConfig(config, region) {
