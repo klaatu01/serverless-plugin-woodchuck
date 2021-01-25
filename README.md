@@ -34,7 +34,39 @@ custom:
     maxBytes: 262144 # (262144-1048576)
     timeout: 5000 # (100-30000)
     port: 1060
+    exclude:
+      - <function-name>
 ```
+
+### Exlcuding functions
+
+The exclude list in woodchuck config can be used to exlude the Woodchuck layer from a function.
+
+#### Example 
+
+In this example only "functionA" function will have the Woodchuck lambda layer.
+
+```yaml
+functions:
+  functionA:
+    handler: handler.handler
+    events:
+      - http:
+          method: get
+          path: a
+  functionB:
+    handler: handler.handler
+    events:
+      - http:
+          method: get
+          path: b
+
+custom:
+  woodchuck:
+    exclude:
+      - functionB
+```
+
 
 ### Destinations
 
