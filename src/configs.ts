@@ -19,6 +19,13 @@ class LogglyConfig {
     }
     return new LogglyConfig(config.token, config.tag);
   }
+
+  public getEnvars = () => {
+    return {
+      LOGGLY_TOKEN: this.token,
+      LOGGLY_TAG: this.tag,
+    }
+  }
 }
 
 class LogzioConfig {
@@ -38,6 +45,13 @@ class LogzioConfig {
       throw new MissingConfigParameterError("config.host");
     }
     return new LogzioConfig(config.token, config.host);
+  }
+
+  public getEnvars = () => {
+    return {
+      LOGZIO_TOKEN: this.token,
+      LOGZIO_HOST: this.host,
+    }
   }
 }
 
@@ -87,6 +101,15 @@ class ExtensionConfig {
     public maxBytes?: number,
     public timeout?: number,
     public port?: number,
+
+    public getEnvars = () => {
+      return {
+        WOODCHUCK_MAX_ITEMS: this.maxItems,
+        WOODCHUCK_MAX_BYTES: this.maxBytes,
+        WOODCHUCK_TIMEOUT: this.timeout,
+        WOODCHUCK_PORT: this.port,
+      }
+    }
   ) { }
 }
 
@@ -102,6 +125,7 @@ class WoodchuckConfig {
     this.excludedFunctions = excludedFunctions;
     this.extensionConfig = extensionConfig;
   }
+
 }
 
 export { LogzioConfig, LogglyConfig, WoodchuckConfig, parseWoodchuckConfig }

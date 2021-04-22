@@ -32,10 +32,8 @@ class WoodchuckPlugin {
         let fn = functions[name];
         fn.layers = [layerArn] || fn.layers;
         fn.environment = {
-          WOODCHUCK_MAX_ITEMS: woodchuckConfig.extensionConfig.maxItems,
-          WOODCHUCK_MAX_BYTES: woodchuckConfig.extensionConfig.maxBytes,
-          WOODCHUCK_TIMEOUT: woodchuckConfig.extensionConfig.timeout,
-          WOODCHUCK_PORT: woodchuckConfig.extensionConfig.port,
+          ...woodchuckConfig.config.getEnvars(),
+          ...woodchuckConfig.extensionConfig.getEnvars(),
           ...fn.environment
         };
       });
