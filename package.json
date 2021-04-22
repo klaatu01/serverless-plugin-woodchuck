@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-woodchuck",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Zero Config serverless plugin for Woodchuck Lambda Extension",
   "main": "./dist/src/woodchuck.js",
   "files": [
