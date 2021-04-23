@@ -58,7 +58,6 @@ class WoodchuckPlugin {
   }
 
   initWoodchuck = async () => {
-    const destination = this.options.init;
     const slsFilePath = this.serverless.serverlessDirPath;
     const serverlessFileObj = await this.serverless.yamlParser.parse(slsFilePath);
     const config = { test: { cfg: 1, abc: 2 } }
