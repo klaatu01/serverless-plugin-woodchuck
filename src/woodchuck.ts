@@ -1,15 +1,33 @@
 import Serverless from "serverless"
 import { WoodchuckConfig, parseWoodchuckConfig } from "./configs"
 import { getLatestLayerArn } from "./layers"
+import { addNewObject } from "./utils"
 
 class WoodchuckPlugin {
   serverless: Serverless;
   hooks: { [key: string]: Function }
+  commands: any
+  options: any
 
   constructor(serverless: Serverless) {
     this.serverless = serverless;
+    this.commands = {
+      woodchuck: {
+        lifecycleEvents: [
+          "init"
+        ],
+        options: {
+          init: {
+            required: true,
+            shortcut: 'i',
+            usage: "Init woodchuck config"
+          }
+        }
+      }
+    }
     this.hooks = {
-      "after:package:initialize": this.addWoodchuck.bind(this)
+      "after:package:initialize": this.addWoodchuck.bind(this),
+      "woodchuck:init": this.initWoodchuck.bind(this)
     };
   }
 
@@ -37,6 +55,14 @@ class WoodchuckPlugin {
           ...fn.environment
         };
       });
+  }
+
+  initWoodchuck = async () => {
+    const destination = this.options.init;
+    const slsFilePath = this.serverless.serverlessDirPath;
+    const serverlessFileObj = await this.serverless.yamlParser.parse(slsFilePath);
+    const config = { test: { cfg: 1, abc: 2 } }
+    addNewObject(serverlessFileObj, slsFilePath, config);
   }
 }
 
