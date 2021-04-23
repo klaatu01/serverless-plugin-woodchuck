@@ -4,7 +4,7 @@ import { getLatestLayerArn } from "./layers"
 import { addNewObject } from "./utils"
 
 class WoodchuckPlugin {
-  serverless: Serverless;
+  serverless: any;
   hooks: { [key: string]: Function }
   commands: any
   options: any
@@ -58,7 +58,7 @@ class WoodchuckPlugin {
   }
 
   initWoodchuck = async () => {
-    const slsFilePath = this.serverless.serverlessDirPath;
+    const slsFilePath = `${this.serverless.serviceDir}/${this.serverless.configurationFilename}`
     const serverlessFileObj = await this.serverless.yamlParser.parse(slsFilePath);
     const config = { test: { cfg: 1, abc: 2 } }
     addNewObject(serverlessFileObj, slsFilePath, config);
