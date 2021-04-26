@@ -4,13 +4,14 @@ import { getLatestLayerArn } from "./layers"
 import { addNewObject } from "./utils"
 
 class WoodchuckPlugin {
-  serverless: any;
+  serverless: Serverless;
   hooks: { [key: string]: Function }
   commands: any
   options: any
 
-  constructor(serverless: Serverless) {
+  constructor(serverless: Serverless, options) {
     this.serverless = serverless;
+    this.options = options;
     this.commands = {
       woodchuck: {
         lifecycleEvents: [
@@ -58,10 +59,16 @@ class WoodchuckPlugin {
   }
 
   initWoodchuck = async () => {
-    const slsFilePath = `${this.serverless.serviceDir}/${this.serverless.configurationFilename}`
-    const serverlessFileObj = await this.serverless.yamlParser.parse(slsFilePath);
-    const config = { test: { cfg: 1, abc: 2 } }
-    addNewObject(serverlessFileObj, slsFilePath, config);
+    const slsFilePath = (this.serverless as any).configurationPath
+    this.serverless.yamlParser.parse(slsFilePath).then((file) => {
+      if (!!file.custom && !!file.custom.woodchuck) {
+        throw new Error("custom.woodchuck already exists, please remove it and run this command again");
+      } else {
+        const config = JSON.parse(JSON.stringify(WoodchuckConfig.getTemplateConfig(this.options.init)))
+        addNewObject(slsFilePath, "custom.woodchuck", config);
+      }
+    }
+    )
   }
 }
 

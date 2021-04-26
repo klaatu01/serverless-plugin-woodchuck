@@ -1,4 +1,4 @@
-import yaml from "yaml-ast-parser"
+import { load, safeDump } from "yaml-ast-parser"
 import fs from "fs"
 import os from 'os';
 import _ from "lodash"
@@ -68,9 +68,9 @@ const constructPlainObject = (ymlAstContent, branchObject = null) => {
   return newbranchObject;
 };
 
-const addNewObject = (ymlFile, pathInYml, newValue) => {
-  let yamlContent = fs.readFileSync(ymlFile, 'utf8')
-  const rawAstObject = yaml.load(yamlContent);
+const addNewObject = (ymlFile: string, pathInYml: string, newValue: object = null) => {
+  const yamlContent = fs.readFileSync(ymlFile, 'utf8')
+  const rawAstObject = load(yamlContent);
   const astObject = parseAST(rawAstObject);
   const plainObject = constructPlainObject(rawAstObject);
   const pathInYmlArray = pathInYml.split('.');
@@ -94,12 +94,12 @@ const addNewObject = (ymlFile, pathInYml, newValue) => {
   } else {
     throw new Error(`${propertyName} can only be undefined or an array!`);
   }
-  currentNode[propertyName] = _.union(propertyName, [newValue]);
+  currentNode[propertyName] = _.merge(newValue, property)
 
   const branchToReplaceName = pathInYmlArray[0];
   const newObject = {};
   newObject[branchToReplaceName] = plainObject[branchToReplaceName];
-  const newText = yaml.dump(newObject, null);
+  const newText = safeDump(newObject, null);
   if (astObject[branchToReplaceName]) {
     const beginning = yamlContent.substring(
       0,

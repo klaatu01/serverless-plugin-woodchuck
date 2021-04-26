@@ -20,6 +20,10 @@ class LogglyConfig {
     return new LogglyConfig(config.token, config.tag);
   }
 
+  public static template = (): LogglyConfig => {
+    return new LogglyConfig("<LOGGLY_TOKEN>", "<LOGGLY_TAG>");
+  }
+
   public getEnvars = () => {
     return {
       LOGGLY_TOKEN: this.token,
@@ -47,6 +51,10 @@ class LogzioConfig {
     return new LogzioConfig(config.token, config.host);
   }
 
+  public static template = (): LogzioConfig => {
+    return new LogzioConfig("<LOGZIO_TOKEN>", "<LOGZIO_HOST>");
+  }
+
   public getEnvars = () => {
     return {
       LOGZIO_TOKEN: this.token,
@@ -55,6 +63,13 @@ class LogzioConfig {
   }
 }
 
+const getTemplateConfigForDestination = (destination: Destination) => {
+  switch (destination) {
+    case "loggly": return LogglyConfig.template();
+    case "logzio": return LogzioConfig.template()
+    default: throw new UnrecognisedDestinationError(destination)
+  }
+}
 
 const parseDestination = (destination: any): Destination => {
   if (!destination)
@@ -124,6 +139,10 @@ class WoodchuckConfig {
     this.config = config;
     this.excludedFunctions = excludedFunctions;
     this.extensionConfig = extensionConfig;
+  }
+
+  public static getTemplateConfig = (destination: Destination): {} => {
+    return new WoodchuckConfig(destination, getTemplateConfigForDestination(destination), undefined, undefined)
   }
 
 }
