@@ -26,6 +26,15 @@ Supported Log Destinations:
 
 ## Install
 
+### Serverless
+
+```sh
+serverless plugin install --name serverless-plugin-woodchucka
+serverless woodchuck --init <destination>
+```
+
+### Manually
+
 ```sh
 yarn add --dev serverless-plugin-woodchuck
 # or
@@ -38,7 +47,6 @@ Add the following plugin to your `serverless.yml`:
 plugins:
   - serverless-plugin-woodchuck
 ```
-
 
 ### Example Configuration
 
