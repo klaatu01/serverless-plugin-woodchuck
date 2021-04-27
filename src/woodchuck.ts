@@ -9,7 +9,7 @@ class WoodchuckPlugin {
   commands: any
   options: any
 
-  constructor(serverless: Serverless, options) {
+  constructor(serverless: Serverless, options: Serverless.Options) {
     this.serverless = serverless;
     this.options = options;
     this.commands = {
@@ -21,7 +21,7 @@ class WoodchuckPlugin {
           init: {
             required: true,
             shortcut: 'i',
-            usage: "Init woodchuck config"
+            usage: "Init woodchuck configuration for a target destination."
           }
         }
       }
@@ -62,13 +62,13 @@ class WoodchuckPlugin {
     const slsFilePath = (this.serverless as any).configurationPath
     this.serverless.yamlParser.parse(slsFilePath).then((file) => {
       if (!!file.custom && !!file.custom.woodchuck) {
-        throw new Error("custom.woodchuck already exists, please remove it and run this command again");
+        throw new Error("Woodchuck: A woodchuck configuration already exists at 'custom.woodchuck'. Please remove it and run this command again.");
       } else {
         const config = JSON.parse(JSON.stringify(WoodchuckConfig.getTemplateConfig(this.options.init)))
         addNewObject(slsFilePath, "custom.woodchuck", config);
+        this.serverless.cli.log(`Woodchuck: Added template configuration for '${this.options.init}' to your serverless.yml`)
       }
-    }
-    )
+    })
   }
 }
 
