@@ -1,11 +1,27 @@
 {
   "name": "serverless-plugin-woodchuck",
-  "version": "0.1.0",
+  "version": "1.0.0-beta.5",
   "description": "Zero Config serverless plugin for Woodchuck Lambda Extension",
-  "main": "woodchuck.js",
+  "main": "./dist/src/woodchuck.js",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "watch": "tsc -w"
   },
   "author": "Charles Ede",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^14.14.41",
+    "@types/serverless": "^1.78.26",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.168",
+    "lodash": "^4.17.21",
+    "yaml-ast-parser": "^0.0.43"
+  }
 }

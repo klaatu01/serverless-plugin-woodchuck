@@ -1,13 +1,39 @@
 # serverless-plugin-woodchuck
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
-Serverless plugin for ~zero-config log forwarding
+Serverless plugin for automatic JSON log forwarding to cloud-based log management tools.
 
 ## Features
 
-* Zero-config: Works out of the box without any extra configuration, by getting the 'default' version of Woodchuck for your region.
+Supported Runtimes:
+* [x] nodejs14.x
+* [x] nodejs12.x
+* [x] nodejs10.x
+* [x] python3.7
+* [x] python2.7
+* [x] dotnetcore3.1
+* [x] dotnetcore2.1
+* [ ] go1.x
+* [ ] java11
+* [ ] java8.al2
+* [ ] java8
+* [ ] ruby2.7
+* [ ] ruby2.5
+
+Supported Log Destinations:
+* [x] Loggly
+* [x] Logz.io
 
 ## Install
+
+### Serverless
+
+```sh
+serverless plugin install --name serverless-plugin-woodchucka
+serverless woodchuck --init <destination>
+```
+
+### Manually
 
 ```sh
 yarn add --dev serverless-plugin-woodchuck
@@ -22,25 +48,52 @@ plugins:
   - serverless-plugin-woodchuck
 ```
 
-## Configure
+### Example Configuration
 
-For more information on Woodchuck and configuring look at its [repo](https://www.github.com/klaatu01/woodchuck)
+This will ship logs to loggly with the source group `profile-service`, using a token stored in Parameter Store.
 
-All keys below are optional. 
 ```yaml
 custom:
   woodchuck:
-    maxItems: 1000 # (100-10000)
-    maxBytes: 262144 # (262144-1048576)
-    timeout: 5000 # (100-30000)
-    port: 1060
-    exclude:
-      - <function-name>
+    destination: "loggly"
+    config: 
+      token: ${ssm:LOGGLY_TOKEN}
+      tag: profile-service
 ```
 
-### Exlcuding functions
+### Destinations
 
-The exclude list in woodchuck config can be used to exlude the Woodchuck layer from a function.
+Woodchuck can be configured to ship logs to a range of supported platforms.
+
+#### Loggly
+
+```yaml
+custom:
+  woodchuck:
+    destination: "loggly"
+    config: 
+      token: <loggly-token>
+      tag: <loggly-tag>
+```
+
+#### Logzio
+
+```yaml
+custom:
+  woodchuck:
+    destination: "logzio"
+    config: 
+      token: <logzio-token>
+      host: <logzio-host> # these are usually like: "listener.logz.io"
+```
+
+#### Extension Configuration
+
+For more information on Woodchuck and configuring look at its [repo](https://www.github.com/klaatu01/woodchuck)
+
+### Excluding functions
+
+The `exclude` list can be used to exclude the Woodchuck layer from a function.
 
 #### Example 
 
@@ -65,19 +118,6 @@ custom:
   woodchuck:
     exclude:
       - functionB
-```
-
-
-### Destinations
-
-Required Environment varibles for each destination are below:
-
-#### Loggly
-
-```yaml
-environment:
-  LOGGLY_TOKEN: <loggly-token>
-  LOGGLY_TAG: <loggly-tag>
 ```
 
 ## Help & Community
