@@ -99,7 +99,8 @@ const parseWoodchuckConfig = (woodchuck: any): WoodchuckConfig => {
   let config = parseDestinationConfig(destination, woodchuck.config);
   let excludedFunctions = getExcludedFunctions(woodchuck)
   let extensionConfig = parseExtensionConfig(woodchuck);
-  return new WoodchuckConfig(destination, config, excludedFunctions, extensionConfig);
+  let customLayerConfig = parseCustomLayerConfig(woodchuck);
+  return new WoodchuckConfig(destination, config, excludedFunctions, extensionConfig, customLayerConfig);
 }
 
 const parseExtensionConfig = (woodchuck: any) => {
@@ -128,21 +129,38 @@ class ExtensionConfig {
   ) { }
 }
 
+const parseCustomLayerConfig = (woodchuck: any): CustomLayerConfig | undefined => {
+  if (!woodchuck.customLayerConfig)
+    return undefined;
+  const customLayerConfig = woodchuck.customLayerConfig;
+  if (!!customLayerConfig.accountId && !!customLayerConfig.version)
+    return new CustomLayerConfig(customLayerConfig.accountId, customLayerConfig.version);
+}
+
+class CustomLayerConfig {
+  constructor(
+    public accountId: string,
+    public version: number,
+  ) { }
+}
+
 class WoodchuckConfig {
   destination: Destination
   config: DestinationConfig
   excludedFunctions: string[]
   extensionConfig: ExtensionConfig;
+  customLayerConfig?: CustomLayerConfig
 
-  public constructor(destination: Destination, config: DestinationConfig, excludedFunctions: string[], extensionConfig: ExtensionConfig) {
+  public constructor(destination: Destination, config: DestinationConfig, excludedFunctions: string[], extensionConfig: ExtensionConfig, customLayerConfig: CustomLayerConfig) {
     this.destination = destination;
     this.config = config;
     this.excludedFunctions = excludedFunctions;
     this.extensionConfig = extensionConfig;
+    this.customLayerConfig = customLayerConfig;
   }
 
   public static getTemplateConfig = (destination: Destination): {} => {
-    return new WoodchuckConfig(destination, getTemplateConfigForDestination(destination), undefined, undefined)
+    return new WoodchuckConfig(destination, getTemplateConfigForDestination(destination), undefined, undefined, undefined)
   }
 
 }

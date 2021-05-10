@@ -1,6 +1,6 @@
 import Serverless from "serverless"
 import { WoodchuckConfig, parseWoodchuckConfig } from "./configs"
-import { getLatestLayerArn } from "./layers"
+import { getLayerArn } from "./layers"
 import { addNewObject } from "./utils"
 
 class WoodchuckPlugin {
@@ -15,7 +15,8 @@ class WoodchuckPlugin {
     this.commands = {
       woodchuck: {
         lifecycleEvents: [
-          "init"
+          "init",
+          "list",
         ],
         options: {
           init: {
@@ -40,7 +41,7 @@ class WoodchuckPlugin {
     const region = service.provider.region
     const functions = service.functions
     const woodchuckConfig = parseWoodchuckConfig(woodchuck);
-    const layerArn = getLatestLayerArn(woodchuck.destination, region);
+    const layerArn = getLayerArn(woodchuck, region);
     this.applyLayer(layerArn, functions, woodchuckConfig);
   }
 

@@ -1,21 +1,26 @@
 import { UnknownVersionError, UnrecognisedDestinationError, Destination } from "./types"
+import { WoodchuckConfig } from "./configs"
 
 const accountId = "846198688143";
 
-const buildArn = (name: string, region: string, version: number) => {
+const buildArn = (name: string, accountId: string, region: string, version: number) => {
   return `arn:aws:lambda:${region}:${accountId}:layer:woodchuck_${name}:${version}`
 }
 
 class Layer {
-  constructor(private name: string, private versions: number[]) { }
+  constructor(public name: string, public versions: number[]) { }
   public getArn(region: string, version: number | undefined = undefined) {
     if (!!version) {
       if (!this.versions.includes(version)) {
         throw new UnknownVersionError(version);
       }
-      return buildArn(this.name, region, version);
+      return buildArn(this.name, accountId, region, version);
     }
-    return buildArn(this.name, region, Math.max(...this.versions))
+    return buildArn(this.name, accountId, region, Math.max(...this.versions))
+  }
+
+  public getArns = (region: string) => {
+    return this.versions.map(v => buildArn(this.name, accountId, region, v));
   }
 }
 
@@ -31,4 +36,20 @@ const getLatestLayerArn = (destination: Destination, region: string): string => 
   return layer.getArn(region);
 }
 
-export { getLatestLayerArn }
+const getLayerArn = (woodchuckConfig: WoodchuckConfig, region: string) => {
+  const { destination } = woodchuckConfig;
+  if (!!woodchuckConfig.customLayerConfig) {
+    const { accountId, version } = woodchuckConfig.customLayerConfig;
+    return buildArn(destination, accountId, region, version);
+  }
+  return getLatestLayerArn(destination, region);
+}
+
+const getLayerVersions = (destination: Destination, region: string) => {
+  const layer = layers[destination];
+  if (!layer)
+    throw new UnrecognisedDestinationError(destination);
+  return layer.getArns(region);
+}
+
+export { getLayerArn, getLayerVersions }
