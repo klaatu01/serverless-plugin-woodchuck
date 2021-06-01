@@ -29,8 +29,8 @@ Supported Log Destinations:
 ### Serverless
 
 ```sh
-serverless plugin install --name serverless-plugin-woodchucka
-serverless woodchuck --init <destination>
+serverless plugin install --name serverless-plugin-woodchuck
+serverless woodchuck --init <loggly|logzio>
 ```
 
 ### Manually

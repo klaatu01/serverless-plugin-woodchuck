@@ -25,8 +25,8 @@ class Layer {
 }
 
 const layers = {
-  "loggly": new Layer("loggly", [3]),
-  "logzio": new Layer("logzio", [3]),
+  "loggly": new Layer("loggly", [3, 4]),
+  "logzio": new Layer("logzio", [3, 4]),
 }
 
 const getLatestLayerArn = (destination: Destination, region: string): string => {
