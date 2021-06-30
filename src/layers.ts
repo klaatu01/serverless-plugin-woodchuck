@@ -25,7 +25,7 @@ class Layer {
 }
 
 const layers = {
-  "loggly": new Layer("loggly", [3, 4, 6]),
+  "loggly": new Layer("loggly", [3, 4, 7]),
   "logzio": new Layer("logzio", [3, 4, 5]),
 }
 
