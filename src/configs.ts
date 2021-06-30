@@ -108,7 +108,8 @@ const parseExtensionConfig = (woodchuck: any) => {
   const maxBytes = woodchuck.maxBytes;
   const port = woodchuck.port;
   const timeout = woodchuck.timeout;
-  return new ExtensionConfig(maxItems, maxBytes, timeout, port);
+  const debug = woodchuck.debug ?? false;
+  return new ExtensionConfig(maxItems, maxBytes, timeout, port, debug);
 }
 
 class ExtensionConfig {
