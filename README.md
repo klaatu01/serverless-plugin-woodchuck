@@ -30,7 +30,6 @@ Supported Log Destinations:
 
 ```sh
 serverless plugin install --name serverless-plugin-woodchuck
-serverless woodchuck --init <loggly|logzio>
 ```
 
 ### Manually
@@ -48,24 +47,9 @@ plugins:
   - serverless-plugin-woodchuck
 ```
 
-### Example Configuration
+Add the relevant config for your logging platform:
 
-This will ship logs to loggly with the source group `profile-service`, using a token stored in Parameter Store.
-
-```yaml
-custom:
-  woodchuck:
-    destination: "loggly"
-    config: 
-      token: ${ssm:LOGGLY_TOKEN}
-      tag: profile-service
-```
-
-### Destinations
-
-Woodchuck can be configured to ship logs to a range of supported platforms.
-
-#### Loggly
+#### Loggly Example Configuration:
 
 ```yaml
 custom:
@@ -76,7 +60,7 @@ custom:
       tag: <loggly-tag>
 ```
 
-#### Logzio
+#### Logzio Example Configuration:
 
 ```yaml
 custom:
@@ -87,15 +71,11 @@ custom:
       host: <logzio-host> # these are usually like: "listener.logz.io"
 ```
 
-#### Extension Configuration
-
 For more information on Woodchuck and configuring look at its [repo](https://www.github.com/klaatu01/woodchuck)
 
 ### Excluding functions
 
-The `exclude` list can be used to exclude the Woodchuck layer from a function.
-
-#### Example 
+The `exclude` array can be used to exclude the Woodchuck layer from a function.
 
 In this example only "functionA" function will have the Woodchuck lambda layer.
 
@@ -119,6 +99,4 @@ custom:
     exclude:
       - functionB
 ```
-
-## Help & Community
 
