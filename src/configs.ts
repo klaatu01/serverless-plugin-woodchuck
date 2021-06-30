@@ -117,16 +117,18 @@ class ExtensionConfig {
     public maxBytes?: number,
     public timeout?: number,
     public port?: number,
-
-    public getEnvars = () => {
-      return {
-        WOODCHUCK_MAX_ITEMS: this.maxItems,
-        WOODCHUCK_MAX_BYTES: this.maxBytes,
-        WOODCHUCK_TIMEOUT: this.timeout,
-        WOODCHUCK_PORT: this.port,
-      }
-    }
+    public debug: boolean = false,
   ) { }
+
+  getEnvars = () => {
+    return {
+      WOODCHUCK_MAX_ITEMS: this.maxItems,
+      WOODCHUCK_MAX_BYTES: this.maxBytes,
+      WOODCHUCK_TIMEOUT: this.timeout,
+      WOODCHUCK_PORT: this.port,
+      RUST_LOG: this.debug == true ? "debug" : null,
+    }
+  }
 }
 
 const parseCustomLayerConfig = (woodchuck: any): CustomLayerConfig | undefined => {
