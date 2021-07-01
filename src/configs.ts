@@ -127,7 +127,7 @@ class ExtensionConfig {
       WOODCHUCK_MAX_BYTES: this.maxBytes,
       WOODCHUCK_TIMEOUT: this.timeout,
       WOODCHUCK_PORT: this.port,
-      RUST_LOG: this.debug == true ? "debug" : null,
+      RUST_LOG: this.debug == true ? "debug" : undefined,
     }
   }
 }
