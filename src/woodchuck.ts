@@ -1,7 +1,7 @@
 import Serverless from "serverless"
 import { WoodchuckConfig, parseWoodchuckConfig } from "./configs"
-import { getLayerArn } from "./layers"
-import { addNewObject } from "./utils"
+import { getLayerArn, printLayerVersions } from "./layers"
+import { getArch } from "./utils"
 
 class WoodchuckPlugin {
   serverless: Serverless;
@@ -15,21 +15,13 @@ class WoodchuckPlugin {
     this.commands = {
       woodchuck: {
         lifecycleEvents: [
-          "init",
-          "list",
-        ],
-        options: {
-          init: {
-            required: true,
-            shortcut: 'i',
-            usage: "Init woodchuck configuration for a target destination."
-          }
-        }
+          "list"
+        ]
       }
     }
     this.hooks = {
       "after:package:initialize": this.addWoodchuck.bind(this),
-      "woodchuck:init": this.initWoodchuck.bind(this)
+      "woodchuck:list": printLayerVersions.bind(this)
     };
   }
 
@@ -38,18 +30,19 @@ class WoodchuckPlugin {
     const { custom = {} } = service;
     const { woodchuck = {} } = custom;
 
-    const region = service.provider.region
     const functions = service.functions
     const woodchuckConfig = parseWoodchuckConfig(woodchuck);
-    const layerArn = getLayerArn(woodchuck, region);
-    this.applyLayer(layerArn, functions, woodchuckConfig);
+    this.applyLayer(functions, service.provider, woodchuckConfig);
   }
 
-  applyLayer = (layerArn: string, functions: any, woodchuckConfig: WoodchuckConfig) => {
+  applyLayer = (functions: any, provider: any, woodchuckConfig: WoodchuckConfig) => {
     Object.getOwnPropertyNames(functions)
       .filter(name => !woodchuckConfig.excludedFunctions.includes(name))
-      .forEach(name => {
-        let fn = functions[name];
+      .map(name => functions[name])
+      .forEach(fn => {
+        const arch = getArch(provider.architecture, fn);
+        const layerArn = getLayerArn(woodchuckConfig, provider.region, arch);
+
         fn.layers = [layerArn] || fn.layers;
         fn.environment = {
           ...woodchuckConfig.config.getEnvars(),
@@ -59,18 +52,6 @@ class WoodchuckPlugin {
       });
   }
 
-  initWoodchuck = async () => {
-    const slsFilePath = (this.serverless as any).configurationPath
-    this.serverless.yamlParser.parse(slsFilePath).then((file) => {
-      if (!!file.custom && !!file.custom.woodchuck) {
-        throw new Error("Woodchuck: A woodchuck configuration already exists at 'custom.woodchuck'. Please remove it and run this command again.");
-      } else {
-        const config = JSON.parse(JSON.stringify(WoodchuckConfig.getTemplateConfig(this.options.init)))
-        addNewObject(slsFilePath, "custom.woodchuck", config);
-        this.serverless.cli.log(`Woodchuck: Added template configuration for '${this.options.init}' to your serverless.yml`)
-      }
-    })
-  }
 }
 
 module.exports = WoodchuckPlugin;

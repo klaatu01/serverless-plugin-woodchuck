@@ -1,55 +1,61 @@
-import { UnknownVersionError, UnrecognisedDestinationError, Destination } from "./types"
+import { UnknownVersionError, UnrecognisedDestinationError, Destination, Arch, NoLayerFound } from "./types"
 import { WoodchuckConfig } from "./configs"
 
 const accountId = "846198688143";
 
-const buildArn = (name: string, accountId: string, region: string, version: number) => {
-  return `arn:aws:lambda:${region}:${accountId}:layer:woodchuck_${name}:${version}`
+const buildArn = (name: string, accountId: string, region: string, arch: string, version: number) => {
+  return `arn:aws:lambda:${region}:${accountId}:layer:woodchuck_${name}_${arch}:${version}`
 }
+
+class LayerVersion {
+  constructor(public name: Destination, public supportedRegions: string[], public supportedArchitectures: string[], public version: number) { }
+  toString = () => JSON.stringify(this);
+}
+
 
 class Layer {
-  constructor(public name: string, public versions: number[]) { }
-  public getArn(region: string, version: number | undefined = undefined) {
-    if (!!version) {
-      if (!this.versions.includes(version)) {
-        throw new UnknownVersionError(version);
-      }
-      return buildArn(this.name, accountId, region, version);
-    }
-    return buildArn(this.name, accountId, region, Math.max(...this.versions))
-  }
-
-  public getArns = (region: string) => {
-    return this.versions.map(v => buildArn(this.name, accountId, region, v));
+  constructor(private destination: Destination, private region: string, private arch: Arch, private version: number) { }
+  public getArn() {
+    return buildArn(this.destination, accountId, this.region, this.arch, this.version)
   }
 }
 
-const layers = {
-  "loggly": new Layer("loggly", [3, 4, 7]),
-  "logzio": new Layer("logzio", [3, 4, 5]),
+const layerVersions = [
+  new LayerVersion("loggly", ["eu-west-1", "eu-west-2"], ["x86_64", "arm64"], 4),
+  new LayerVersion("loggly", ["eu-west-1", "eu-west-2", "eu-central-1", "us-east-1", "us-west-2", "us-east-2"], ["x86_64", "arm64"], 3),
+  new LayerVersion("logzio", ["eu-west-1", "eu-west-2"], ["x86_64", "arm64"], 4),
+  new LayerVersion("logzio", ["eu-west-1", "eu-west-2", "eu-central-1", "us-east-1", "us-west-2", "us-east-2"], ["x86_64", "arm64"], 3),
+]
+
+const getCompatibleLayerVersions = (destination: Destination, region: string, arch: Arch) =>
+  layerVersions
+    .filter(layer => (layer.name == destination && layer.supportedRegions.includes(region) && layer.supportedArchitectures.includes(arch)))
+
+const getLatestLayer = (destination: Destination, region: string, arch: Arch) => {
+  const compatibleLayers =
+    getCompatibleLayerVersions(destination, region, arch)
+      .sort(layer => layer.version)
+      .map(layer => new Layer(destination, region, arch, layer.version))
+
+  if (compatibleLayers.length == 0)
+    throw new NoLayerFound(destination, region, arch);
+
+  return compatibleLayers[0]
 }
 
-const getLatestLayerArn = (destination: Destination, region: string): string => {
-  const layer = layers[destination];
-  if (!layer)
-    throw new UnrecognisedDestinationError(destination);
-  return layer.getArn(region);
-}
-
-const getLayerArn = (woodchuckConfig: WoodchuckConfig, region: string) => {
+const getLayerArn = (woodchuckConfig: WoodchuckConfig, region: string, arch: Arch) => {
   const { destination } = woodchuckConfig;
   if (!!woodchuckConfig.customLayerConfig) {
     const { accountId, version } = woodchuckConfig.customLayerConfig;
-    return buildArn(destination, accountId, region, version);
+    return buildArn(destination, accountId, region, arch, version);
   }
-  return getLatestLayerArn(destination, region);
+  return getLatestLayer(destination, region, arch).getArn();
 }
 
-const getLayerVersions = (destination: Destination, region: string) => {
-  const layer = layers[destination];
-  if (!layer)
-    throw new UnrecognisedDestinationError(destination);
-  return layer.getArns(region);
+const printLayerVersions = () => {
+  layerVersions
+    .map(version => version.toString())
+    .forEach(version => console.log(version))
 }
 
-export { getLayerArn, getLayerVersions }
+export { getLayerArn, printLayerVersions }
