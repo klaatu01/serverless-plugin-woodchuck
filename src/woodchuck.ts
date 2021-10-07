@@ -31,9 +31,18 @@ class WoodchuckPlugin {
     const { woodchuck = {} } = custom;
 
     const functions = service.functions
+
+    this.checkVersion();
+
     const woodchuckConfig = parseWoodchuckConfig(woodchuck);
     this.applyLayer(functions, service.provider, woodchuckConfig);
   }
+
+  checkVersion = () => {
+    if (this.serverless.version < "2.61.0")
+      throw new Error(`Incompatible Serverless Version.\nCurrent:  "${this.serverless.version}".\nRequires: "^2.61.0".`)
+  }
+
 
   applyLayer = (functions: any, provider: any, woodchuckConfig: WoodchuckConfig) => {
     Object.getOwnPropertyNames(functions)
