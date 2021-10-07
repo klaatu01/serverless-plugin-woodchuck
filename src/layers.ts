@@ -14,7 +14,7 @@ class LayerVersion {
 
 
 class Layer {
-  constructor(private destination: Destination, private region: string, private arch: Arch, private version: number) { }
+  constructor(public destination: Destination, public region: string, public arch: Arch, public version: number) { }
   public getArn() {
     return buildArn(this.destination, accountId, this.region, this.arch, this.version)
   }
@@ -58,4 +58,4 @@ const printLayerVersions = () => {
     .forEach(version => console.log(version))
 }
 
-export { getLayerArn, printLayerVersions }
+export { getLayerArn, getCompatibleLayerVersions, getLatestLayer, layerVersions, printLayerVersions, buildArn }
