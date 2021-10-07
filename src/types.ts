@@ -1,4 +1,5 @@
 type Destination = "loggly" | "logzio"
+type Arch = "x86_64" | "arm64"
 
 class MissingConfigParameterError implements Error {
   name = "MissingConfigParameter"
@@ -24,4 +25,12 @@ class UnknownVersionError implements Error {
   }
 }
 
-export { MissingConfigParameterError, UnrecognisedDestinationError, Destination, UnknownVersionError };
+class NoLayerFound implements Error {
+  name = "NoLayerFound"
+  message: string
+  public constructor(destination: string, region: string, arch: string) {
+    this.message = `No Layer found for'`;
+  }
+}
+
+export { Arch, MissingConfigParameterError, UnrecognisedDestinationError, Destination, UnknownVersionError, NoLayerFound };
