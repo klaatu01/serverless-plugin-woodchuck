@@ -63,10 +63,42 @@ class LogzioConfig {
   }
 }
 
+class FirehoseConfig {
+  arn: string
+  metadata: {}
+
+  public constructor(arn: string, metadata: {}) {
+    this.arn = arn
+    this.metadata = metadata
+  }
+
+  public static parseConfig = (config: any): FirehoseConfig => {
+    if (!config.arn) {
+      throw new MissingConfigParameterError("config.arn");
+    }
+    if (!config.metadata == null) {
+      throw new MissingConfigParameterError("config.metadata");
+    }
+    return new FirehoseConfig(arn, metadata)
+  }
+
+  public static template = (): LogzioConfig => {
+    return new FirehoseConfig("<arn>", {random:"data"});
+  }
+
+  public getEnvars = () => {
+    return {
+      WOODCHUCK_FIREHOSE_METADATA: JSON.stringify(this.metadata),
+      WOODCHUCK_FIREHOSE_TARGET: this.arn,
+    }
+  }
+}
+
 const getTemplateConfigForDestination = (destination: Destination) => {
   switch (destination) {
     case "loggly": return LogglyConfig.template();
     case "logzio": return LogzioConfig.template()
+    case "firehose": return FirehoseConfig.template()
     default: throw new UnrecognisedDestinationError(destination)
   }
 }
@@ -74,7 +106,7 @@ const getTemplateConfigForDestination = (destination: Destination) => {
 const parseDestination = (destination: any): Destination => {
   if (!destination)
     throw new MissingConfigParameterError("woodchuck.destination");
-  if (destination == "loggly" || destination == "logzio")
+  if (destination == "loggly" || destination == "logzio" || destination == "firehose")
     return destination
   throw new UnrecognisedDestinationError(destination);
 }
@@ -85,6 +117,7 @@ const parseDestinationConfig = (destination: Destination, config: any): Destinat
   switch (destination) {
     case "loggly": return LogglyConfig.parseConfig(config)
     case "logzio": return LogzioConfig.parseConfig(config)
+    case "firehose": return FirehoseConfig.parseConfig(config)
     default: throw new UnrecognisedDestinationError(destination)
   }
 }
@@ -168,4 +201,4 @@ class WoodchuckConfig {
 
 }
 
-export { LogzioConfig, LogglyConfig, WoodchuckConfig, parseWoodchuckConfig }
+export { LogzioConfig, LogglyConfig, FirehoseConfig, WoodchuckConfig, parseWoodchuckConfig }
