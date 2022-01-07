@@ -1,5 +1,5 @@
 import { MissingConfigParameterError, UnrecognisedDestinationError, Destination } from "./types"
-type DestinationConfig = LogglyConfig | LogzioConfig
+type DestinationConfig = LogglyConfig | LogzioConfig | FirehoseConfig
 
 class LogglyConfig {
   token: string
@@ -30,6 +30,8 @@ class LogglyConfig {
       LOGGLY_TAG: this.tag,
     }
   }
+
+  public getPermissions = () => undefined
 }
 
 class LogzioConfig {
@@ -61,6 +63,8 @@ class LogzioConfig {
       LOGZIO_HOST: this.host,
     }
   }
+
+  public getPermissions = () => undefined
 }
 
 class FirehoseConfig {
@@ -79,11 +83,11 @@ class FirehoseConfig {
     if (!config.metadata == null) {
       throw new MissingConfigParameterError("config.metadata");
     }
-    return new FirehoseConfig(arn, metadata)
+    return new FirehoseConfig(config.arn, config.metadata)
   }
 
-  public static template = (): LogzioConfig => {
-    return new FirehoseConfig("<arn>", {random:"data"});
+  public static template = (): FirehoseConfig => {
+    return new FirehoseConfig("<Firehose ARN>", { random: "data" });
   }
 
   public getEnvars = () => {
@@ -91,6 +95,10 @@ class FirehoseConfig {
       WOODCHUCK_FIREHOSE_METADATA: JSON.stringify(this.metadata),
       WOODCHUCK_FIREHOSE_TARGET: this.arn,
     }
+  }
+
+  public getPermissions = () => {
+    [{ Effect: "Allow", Action: "firehose:PutRecord", Resource: this.arn }]
   }
 }
 
