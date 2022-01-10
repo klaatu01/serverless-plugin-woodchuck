@@ -36,6 +36,7 @@ class WoodchuckPlugin {
 
     const woodchuckConfig = parseWoodchuckConfig(woodchuck);
     this.applyLayer(functions, service.provider, woodchuckConfig);
+    this.applyPermissions(service.provider, woodchuckConfig);
   }
 
   checkVersion = () => {
@@ -43,6 +44,14 @@ class WoodchuckPlugin {
       throw new Error(`Incompatible Serverless Version.\nCurrent:  "${this.serverless.version}".\nRequires: "^2.61.0".`)
   }
 
+  applyPermissions = (provider: any, woodchuckConfig: WoodchuckConfig) => {
+    const permissions = woodchuckConfig.config.getPermissions()
+
+    if (!provider.iamRoleStatements)
+      provider.iamRoleStatements = permissions
+    else
+      provider.iamRoleStatements = provider.iamRoleStatements.concat(permissions)
+  }
 
   applyLayer = (functions: any, provider: any, woodchuckConfig: WoodchuckConfig) => {
     Object.getOwnPropertyNames(functions)

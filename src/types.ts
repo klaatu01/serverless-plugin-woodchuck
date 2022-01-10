@@ -1,4 +1,4 @@
-type Destination = "loggly" | "logzio"
+type Destination = "loggly" | "logzio" | "firehose"
 type Arch = "x86_64" | "arm64"
 
 class MissingConfigParameterError implements Error {
