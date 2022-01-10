@@ -46,10 +46,11 @@ class WoodchuckPlugin {
 
   applyPermissions = (provider: any, woodchuckConfig: WoodchuckConfig) => {
     const permissions = woodchuckConfig.config.getPermissions()
+
     if (!provider.iamRoleStatements)
       provider.iamRoleStatements = permissions
     else
-      provider.iamRoleStatements.append(permissions)
+      provider.iamRoleStatements = provider.iamRoleStatements.concat(permissions)
   }
 
   applyLayer = (functions: any, provider: any, woodchuckConfig: WoodchuckConfig) => {

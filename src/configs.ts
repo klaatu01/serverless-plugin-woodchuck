@@ -93,12 +93,12 @@ class FirehoseConfig {
   public getEnvars = () => {
     return {
       WOODCHUCK_FIREHOSE_METADATA: JSON.stringify(this.metadata),
-      WOODCHUCK_FIREHOSE_TARGET: this.arn,
+      WOODCHUCK_FIREHOSE_TARGET: this.arn.split("/")[1],
     }
   }
 
   public getPermissions = () => {
-    [{ Effect: "Allow", Action: "firehose:PutRecord", Resource: this.arn }]
+    return [{ Effect: "Allow", Action: ["firehose:PutRecord"], Resource: [this.arn] }]
   }
 }
 
