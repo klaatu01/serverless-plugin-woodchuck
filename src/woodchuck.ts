@@ -46,7 +46,8 @@ class WoodchuckPlugin {
 
   applyPermissions = (provider: any, woodchuckConfig: WoodchuckConfig) => {
     const permissions = woodchuckConfig.config.getPermissions()
-
+    if (!permissions)
+      return
     if (!provider.iamRoleStatements)
       provider.iamRoleStatements = permissions
     else
