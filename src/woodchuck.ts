@@ -62,7 +62,7 @@ class WoodchuckPlugin {
         const arch = getArch(provider.architecture, fn);
         const layerArn = getLayerArn(woodchuckConfig, provider.region, arch);
 
-        fn.layers = [layerArn] || fn.layers;
+        fn.layers = fn.layers.concat([layerArn]);
         fn.environment = {
           ...woodchuckConfig.config.getEnvars(),
           ...woodchuckConfig.extensionConfig.getEnvars(),
