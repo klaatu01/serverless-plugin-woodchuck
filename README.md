@@ -11,6 +11,7 @@ Supported Runtimes:
 * [x] nodejs10.x
 * [x] python3.7
 * [x] python2.7
+* [x] dotnet6.0
 * [x] dotnetcore3.1
 * [x] dotnetcore2.1
 * [ ] go1.x
