@@ -21,11 +21,11 @@ class Layer {
 }
 
 const layerVersions = [
-  new LayerVersion("loggly", ["eu-west-1", "eu-west-2"], ["x86_64", "arm64"], 5),
-  new LayerVersion("loggly", ["eu-west-1", "eu-west-2", "eu-central-1", "us-east-1", "us-west-2", "us-east-2"], ["x86_64", "arm64"], 4),
-  new LayerVersion("logzio", ["eu-west-1", "eu-west-2"], ["x86_64", "arm64"], 5),
-  new LayerVersion("logzio", ["eu-west-1", "eu-west-2", "eu-central-1", "us-east-1", "us-west-2", "us-east-2"], ["x86_64", "arm64"], 4),
-  new LayerVersion("firehose", ["eu-west-1", "eu-west-2", "eu-central-1", "us-east-1", "us-west-2", "us-east-2"], ["x86_64", "arm64"], 4),
+  new LayerVersion("loggly", ["eu-west-1", "eu-west-2"], ["x86_64", "arm64"], 7),
+  new LayerVersion("loggly", ["eu-west-1", "eu-west-2", "eu-central-1", "us-east-1", "us-west-2", "us-east-2"], ["x86_64", "arm64"], 6),
+  new LayerVersion("logzio", ["eu-west-1", "eu-west-2"], ["x86_64", "arm64"], 7),
+  new LayerVersion("logzio", ["eu-west-1", "eu-west-2", "eu-central-1", "us-east-1", "us-west-2", "us-east-2"], ["x86_64", "arm64"], 6),
+  new LayerVersion("firehose", ["eu-west-1", "eu-west-2", "eu-central-1", "us-east-1", "us-west-2", "us-east-2"], ["x86_64", "arm64"], 6),
 ]
 
 const getCompatibleLayerVersions = (destination: Destination, region: string, arch: Arch) =>
